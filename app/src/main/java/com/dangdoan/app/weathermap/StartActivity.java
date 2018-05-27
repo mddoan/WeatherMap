@@ -16,7 +16,6 @@ import com.dangdoan.app.weathermap.loader.JsonVolleyLoader;
 import com.dangdoan.app.weathermap.loader.VolleyLoader;
 import com.dangdoan.app.weathermap.loader.VolleyLoaderData;
 import com.dangdoan.app.weathermap.webservices.GetFiveDaysForecastRequest;
-import com.dangdoan.app.weathermap.webservices.WeatherMapHttpRequest;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -25,10 +24,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.dangdoan.app.weathermap.Utils.Constant.KEY_PARAM_LAT;
-import static com.dangdoan.app.weathermap.Utils.Constant.KEY_PARAM_LON;
-import static com.dangdoan.app.weathermap.Utils.Constant.REQUEST_CODE_ZOOM_INTO_CURRENT_LOCATION;
-import static com.dangdoan.app.weathermap.Utils.Constant.URL_FORECAST;
+import static com.dangdoan.app.weathermap.utils.Constant.KEY_PARAM_LAT;
+import static com.dangdoan.app.weathermap.utils.Constant.KEY_PARAM_LON;
+import static com.dangdoan.app.weathermap.utils.Constant.REQUEST_CODE_ZOOM_INTO_CURRENT_LOCATION;
+import static com.dangdoan.app.weathermap.utils.Constant.URL_FORECAST;
 
 public class StartActivity extends AppCompatActivity{
     private static final String TAG = StartActivity.class.getSimpleName();
@@ -126,6 +125,7 @@ public class StartActivity extends AppCompatActivity{
             @Override
             public void onResponse(VolleyLoaderData volleyLoaderData) {
                 Log.v(TAG, "onResponse");
+                GetFiveDaysForecastRequest.pareResponse(StartActivity.this, volleyLoaderData);
             }
         }, new VolleyLoader.LoaderErrorListener() {
             @Override

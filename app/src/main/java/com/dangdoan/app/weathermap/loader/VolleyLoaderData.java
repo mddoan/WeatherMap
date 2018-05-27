@@ -2,6 +2,8 @@ package com.dangdoan.app.weathermap.loader;
 
 import android.text.TextUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class VolleyLoaderData {
@@ -11,7 +13,7 @@ public class VolleyLoaderData {
 
     public VolleyLoaderData(JSONObject response){
         mData = response;
-        metaData = readMeta();
+        //metaData = readMeta();
         payLoad = readPayLoad();
 
     }
@@ -56,7 +58,7 @@ public class VolleyLoaderData {
     }
 
     private String readPayLoad(){
-        return mData.optString("response");
+        return mData.toString();
     }
 
     public Meta getMeta() {
@@ -81,5 +83,23 @@ public class VolleyLoaderData {
 
     public boolean success(){
         return metaData.isSuccess();
+    }
+
+    public JSONObject getPayLoadJSONObject(){
+        try {
+            return new JSONObject(payLoad);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public JSONArray getPayLoadJSONArray(){
+        try {
+            return new JSONArray(payLoad);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

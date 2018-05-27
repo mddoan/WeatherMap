@@ -1,4 +1,4 @@
-package com.dangdoan.app.weathermap.Utils;
+package com.dangdoan.app.weathermap.utils;
 
 public interface Constant {
     public static final int REQUEST_CODE_ZOOM_INTO_CURRENT_LOCATION = 1000;
