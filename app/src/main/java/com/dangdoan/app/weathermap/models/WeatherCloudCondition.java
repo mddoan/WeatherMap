@@ -12,16 +12,26 @@ import paperparcel.PaperParcel;
 @EqualsAndHashCode
 @ToString
 @Builder(toBuilder = true)
-public class WeatherSlot implements Parcelable {
+public class WeatherCloudCondition implements Parcelable{
+    private int all;
+
+    public WeatherCloudCondition(int all){
+        this.all = all;
+    }
+
+    public int getAll() {
+        return all;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
-    public static final Creator<WeatherSlot> CREATOR = PaperParcelWeatherSlot.CREATOR;
+    public static final Creator<WeatherCloudCondition> CREATOR = PaperParcelWeatherCloudCondition.CREATOR;
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        PaperParcelWeatherSlot.writeToParcel(this, dest, flags);
+        PaperParcelWeatherCloudCondition.writeToParcel(this, dest, flags);
     }
 }
