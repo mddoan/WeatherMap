@@ -1,5 +1,6 @@
 package com.dangdoan.app.weather.models;
 
+import android.arch.lifecycle.MutableLiveData;
 import android.os.Parcel;
 import android.os.Parcelable;
 

@@ -1,6 +1,8 @@
 package com.dangdoan.app.weather;
 
 import android.Manifest;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -15,9 +17,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.design.widget.TabLayout;
 import android.util.Log;
+import android.widget.TextView;
+
 import com.android.volley.VolleyError;
 import com.dangdoan.app.weather.loader.VolleyLoader;
 import com.dangdoan.app.weather.loader.VolleyLoaderData;
+import com.dangdoan.app.weather.models.WeatherDataViewModel;
 import com.dangdoan.app.weather.models.WeatherHourly;
 import com.dangdoan.app.weather.models.WeatherObject;
 import com.dangdoan.app.weather.page.DailyFragment;
@@ -36,6 +41,7 @@ import java.util.StringTokenizer;
 import static com.dangdoan.app.weather.utils.Constant.KEY_PARAM_LAT;
 import static com.dangdoan.app.weather.utils.Constant.KEY_PARAM_LON;
 import static com.dangdoan.app.weather.utils.Constant.REQUEST_CODE_ZOOM_INTO_CURRENT_LOCATION;
+import static com.dangdoan.app.weather.utils.Constant.TODAY;
 import static com.dangdoan.app.weather.utils.Constant.URL_FORECAST;
 
 public class StartActivity extends AppCompatActivity{
@@ -45,7 +51,12 @@ public class StartActivity extends AppCompatActivity{
     private ViewPager mViewPager;
     private TabLayout tabLayout;
     private WeatherPagerAdapter mAdapter;
+    private TextView location;
+
+    private WeatherDataViewModel weatherDataViewModel;
+
     List<WeatherHourly> [] days = new List[5];
+
 
 
     @Override
@@ -57,6 +68,7 @@ public class StartActivity extends AppCompatActivity{
         mAdapter = new WeatherPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
         tabLayout.setupWithViewPager(mViewPager);
+        location = findViewById(R.id.location);
         initLocation();
     }
 
@@ -79,12 +91,22 @@ public class StartActivity extends AppCompatActivity{
                         if (location != null) {
                             // Logic to handle location object
                             mCurrentLocation = location;
-                            Log.v(TAG, "My location: " + location.getLatitude() + "/" + location.getLongitude
-                                    ());
-                            loadFiveDaysForecastData();
+                            Log.v(TAG, "My location: " + location.getLatitude() + "/" + location.getLongitude());
+                            loadWeatherData();
                         }
                     }
                 });
+    }
+
+    private void loadWeatherData(){
+        WeatherDataViewModel viewModel = ViewModelProviders.of(this).get(WeatherDataViewModel.class);
+        viewModel.getWeatherObject(this, mCurrentLocation).observe(this, weatherObject ->{
+            updateUI(weatherObject);
+        });
+    }
+
+    private void updateUI(WeatherObject weatherObject){
+        location.setText(weatherObject.getCity().getName());
     }
 
     public void checkPermission(int reqCode) {
@@ -135,41 +157,9 @@ public class StartActivity extends AppCompatActivity{
                 tag);
     }
 
-    private void loadFiveDaysForecastData(){
-        if(mCurrentLocation == null){
-            return;
-        }
-        final GetFiveDaysForecastRequest request = new GetFiveDaysForecastRequest(URL_FORECAST, getRequestParams
-                (mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
-        JsonVolleyLoader loader = new JsonVolleyLoader(this, request, "", new VolleyLoader.LoaderListener() {
-            @Override
-            public void onResponse(VolleyLoaderData volleyLoaderData) {
-                Log.v(TAG, "onResponse");
-                WeatherObject weatherObject = GetFiveDaysForecastRequest.pareResponse(StartActivity.this,
-                        volleyLoaderData);
-                if(weatherObject != null){
-                    filter(weatherObject.getList());
-                    List<WeatherHourly> today = getHourlyWeatherOfTheDay(0);
-                    Log.v(TAG, "TODAY");
-                }
 
 
-            }
-        }, new VolleyLoader.LoaderErrorListener() {
-            @Override
-            public void onResponseError(VolleyError error) {
-                Log.v(TAG, "onResponseError");
-            }
-        });
-        loader.loadJsonObjectData();
-    }
 
-    private Map<String, String> getRequestParams(double lat, double lon){
-        Map<String, String> params = new HashMap<>();
-        params.put(KEY_PARAM_LAT, String.valueOf(lat));
-        params.put(KEY_PARAM_LON, String.valueOf(lon));
-        return params;
-    }
 
     public class WeatherPagerAdapter extends FragmentStatePagerAdapter{
         public WeatherPagerAdapter(FragmentManager fm) {
@@ -205,28 +195,5 @@ public class StartActivity extends AppCompatActivity{
         }
     }
 
-    public void filter(List<WeatherHourly> list){
 
-        String current = new StringTokenizer(list.get(0).getDt_txt()).nextToken();
-        int day = 0;
-        days[day] = new ArrayList<>();
-        for(WeatherHourly item : list){
-            if(day < 5) {
-                String date = new StringTokenizer(item.getDt_txt()).nextToken();
-                if (date.equals(current)) {
-                    days[day].add(item);
-                }else if(day < 4){
-                    day++;
-                    days[day] = new ArrayList<>();
-                }
-            }
-        }
-    }
-
-    public List<WeatherHourly> getHourlyWeatherOfTheDay(int day){
-        if(days.length > day){
-            return days[day];
-        }
-        return null;
-    }
 }
