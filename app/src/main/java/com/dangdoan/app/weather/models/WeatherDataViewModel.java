@@ -44,9 +44,12 @@ public class WeatherDataViewModel extends ViewModel{
         return mWeatherObject;
     }
 
-    public LiveData<List<WeatherHourly>> getWeatherForDay(int day){
+    public LiveData<List<WeatherHourly>> getWeatherForDay(Context context, int day){
         mDay = day;
-        selected.setValue(getHourlyWeatherOfTheDay(mDay));
+        if(selected == null){
+            selected = new MutableLiveData<>();
+            loadFiveDaysWeatherData(context);
+        }
         return selected;
     }
 
@@ -65,8 +68,10 @@ public class WeatherDataViewModel extends ViewModel{
                 if(weatherObject != null){
                     filter(weatherObject.getList());
                     List<WeatherHourly> weatherOfDay = getHourlyWeatherOfTheDay(mDay);
+                    selected.setValue(weatherOfDay);
                 }
                 mWeatherObject.setValue(weatherObject);
+
 
             }
         }, new VolleyLoader.LoaderErrorListener() {
@@ -101,6 +106,7 @@ public class WeatherDataViewModel extends ViewModel{
                 }
             }
         }
+        Log.v(TAG, "filter");
     }
 
     public List<WeatherHourly> getHourlyWeatherOfTheDay(int day){

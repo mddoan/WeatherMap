@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Weather</string>
     <string name="location_label">LOCATION: </string>
+    <string name="current">CURRENT</string>
+
+
 </resources>

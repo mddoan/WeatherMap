@@ -168,12 +168,13 @@ public class StartActivity extends AppCompatActivity{
 
         @Override
         public Fragment getItem(int position) {
-            return DailyFragment.newInstance();
+            Log.v(TAG, "getItem");
+            return DailyFragment.newInstance(position);
         }
 
         @Override
         public int getCount() {
-            return 6;
+            return 5;
         }
 
         @Override

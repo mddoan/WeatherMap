@@ -11,4 +11,6 @@ public interface Constant {
     public static final int DAY_3 = 2;
     public static final int DAY_4 = 3;
     public static final int DAY_5 = 4;
+
+    public static final String EXTRA_INDEX = "extraIndex";
 }
