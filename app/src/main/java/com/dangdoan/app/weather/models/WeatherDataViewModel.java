@@ -33,8 +33,6 @@ public class WeatherDataViewModel extends ViewModel{
 
     private MutableLiveData<WeatherObject> mWeatherObject;
 
-    private MutableLiveData<List<WeatherHourly>> selected = new MutableLiveData<>();
-
     public LiveData<WeatherObject> getWeatherObject(Context context, Location location){
         mCurrentLocation = location;
         if(mWeatherObject == null){
@@ -44,13 +42,11 @@ public class WeatherDataViewModel extends ViewModel{
         return mWeatherObject;
     }
 
-    public LiveData<List<WeatherHourly>> getWeatherForDay(Context context, int day){
-        mDay = day;
-        if(selected == null){
-            selected = new MutableLiveData<>();
-            loadFiveDaysWeatherData(context);
+    public List<WeatherHourly> getWeatherForDay(int day){
+        if(fiveDaysWeather != null && fiveDaysWeather.length > day){
+            return fiveDaysWeather[day];
         }
-        return selected;
+        return null;
     }
 
     private void loadFiveDaysWeatherData(final Context context){
@@ -67,8 +63,6 @@ public class WeatherDataViewModel extends ViewModel{
                         volleyLoaderData);
                 if(weatherObject != null){
                     filter(weatherObject.getList());
-                    List<WeatherHourly> weatherOfDay = getHourlyWeatherOfTheDay(mDay);
-                    selected.setValue(weatherOfDay);
                 }
                 mWeatherObject.setValue(weatherObject);
 
@@ -93,26 +87,24 @@ public class WeatherDataViewModel extends ViewModel{
     public void filter(List<WeatherHourly> list){
         fiveDaysWeather = new List[5];
         String current = new StringTokenizer(list.get(0).getDt_txt()).nextToken();
+        for(int i=0; i<5; i++) {
+            fiveDaysWeather[i] = new ArrayList<>();
+        }
+
         int day = 0;
-        fiveDaysWeather[day] = new ArrayList<>();
         for(WeatherHourly item : list){
             if(day < 5) {
                 String date = new StringTokenizer(item.getDt_txt()).nextToken();
                 if (date.equals(current)) {
                     fiveDaysWeather[day].add(item);
                 }else if(day < 4){
+                    current = date;
                     day++;
-                    fiveDaysWeather[day] = new ArrayList<>();
                 }
+
             }
         }
         Log.v(TAG, "filter");
     }
 
-    public List<WeatherHourly> getHourlyWeatherOfTheDay(int day){
-        if(fiveDaysWeather.length > day){
-            return fiveDaysWeather[day];
-        }
-        return null;
-    }
 }

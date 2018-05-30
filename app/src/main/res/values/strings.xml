@@ -2,6 +2,10 @@
     <string name="app_name">Weather</string>
     <string name="location_label">LOCATION: </string>
     <string name="current">CURRENT</string>
-
+    <string name="temp">TEMP: %s\u2109</string>
+    <string name="temp_min">TEMP max: %s\u2109</string>
+    <string name="temp_max">TEMP min: %s\u2109</string>
+    <string name="humidity">HUMIDITY: %s%%</string>
+    <string name="wind">WIND: %smph</string>
 
 </resources>

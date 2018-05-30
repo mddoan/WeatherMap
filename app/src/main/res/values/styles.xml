@@ -11,8 +11,17 @@
     <style name="textStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">10dp</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:textSize">@dimen/textSize</item>
+    </style>
+
+    <style name="CardViewStyle" parent="CardView">
+        <item name="android:layout_margin">@dimen/card_layout_margin</item>
+        <item name="cardElevation">@dimen/card_elevation</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
+        <item name="cardPreventCornerOverlap">false</item>
+        <item name="cardBackgroundColor">@color/colorWhite</item>
+        <item name="android:descendantFocusability">blocksDescendants</item>
     </style>
 </resources>

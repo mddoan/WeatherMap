@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="textSize">14sp</dimen>
+    <dimen name="card_layout_margin">5dp</dimen>
+    <dimen name="card_elevation">3dp</dimen>
+    <dimen name="card_corner_radius"></dimen>
 </resources>
